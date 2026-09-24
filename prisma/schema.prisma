@@ -1,0 +1,287 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  role         String   // "student" | "teacher" | "admin"
+  name         String
+  email        String   @unique
+  passwordHash String
+  profile      String?  // JSON string for profile details (e.g. bio, avatar)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  teacherCourses        Course[]               @relation("TeacherCourses")
+  enrollments           Enrollment[]
+  attendance            Attendance[]
+  submissions           Submission[]
+  examResults           ExamResult[]
+  aiInsights            AIInsight[]
+  reports               Report[]               @relation("ReportAuthor")
+  fees                  Fee[]
+  placementApplications PlacementApplication[]
+  libraryLoans          LibraryLoan[]
+  mentorMeetings        MentorMeeting[]        @relation("MentorMeetings")
+  menteeMeetings        MentorMeeting[]        @relation("MenteeMeetings")
+  grievances            Grievance[]
+  codingSubmissions     CodingSubmission[]
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  category    String
+  teacherId   String
+  schedule    String
+  syllabusUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  teacher User    @relation("TeacherCourses", fields: [teacherId], references: [id], onDelete: Cascade)
+  classes Class[]
+}
+
+model Class {
+  id        String   @id @default(uuid())
+  courseId  String
+  name      String
+  term      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  course            Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollments       Enrollment[]
+  attendance        Attendance[]
+  assignments       Assignment[]
+  exams             Exam[]
+  aiInsights        AIInsight[]
+  codingAssignments CodingAssignment[]
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  studentId  String
+  classId    String
+  enrolledAt DateTime @default(now())
+  status     String   // "active" | "completed" | "dropped"
+
+  // Relations
+  student User  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, classId])
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  classId   String
+  studentId String
+  date      String   // YYYY-MM-DD
+  status    String   // "present" | "absent" | "late"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+  student User  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, studentId, date])
+}
+
+model Assignment {
+  id          String   @id @default(uuid())
+  classId     String
+  title       String
+  description String
+  dueDate     DateTime
+  maxScore    Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  class       Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+}
+
+model Submission {
+  id           String   @id @default(uuid())
+  assignmentId String
+  studentId    String
+  submittedAt  DateTime @default(now())
+  fileUrl      String?
+  score        Float?
+  feedback     String?
+  aiFeedback   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student    User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([assignmentId, studentId])
+}
+
+model Exam {
+  id        String   @id @default(uuid())
+  classId   String
+  title     String
+  date      DateTime
+  maxMarks  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  class       Class        @relation(fields: [classId], references: [id], onDelete: Cascade)
+  examResults ExamResult[]
+}
+
+model ExamResult {
+  id        String   @id @default(uuid())
+  examId    String
+  studentId String
+  marks     Float
+  grade     String   // A, B, C, D, F
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  exam    Exam @relation(fields: [examId], references: [id], onDelete: Cascade)
+  student User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([examId, studentId])
+}
+
+model AIInsight {
+  id          String   @id @default(uuid())
+  studentId   String
+  classId     String?
+  type        String   // "risk" | "weak_subject" | "recommendation"
+  payloadJson String   // JSON string with detailed metrics
+  generatedAt DateTime @default(now())
+
+  // Relations
+  student User   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  class   Class? @relation(fields: [classId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id          String   @id @default(uuid())
+  scope       String   // "student" | "class" | "institution"
+  generatedBy String
+  fileUrl     String?
+  contentJson String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  author User @relation("ReportAuthor", fields: [generatedBy], references: [id], onDelete: Cascade)
+}
+
+// --- COLLEGE ERP MODELS ---
+
+model Fee {
+  id        String   @id @default(uuid())
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type      String   // tuition, exam, hostel, transport
+  amount    Float
+  paid      Float
+  dueDate   DateTime
+  status    String   // pending, paid, overdue
+}
+
+model PlacementJob {
+  id              String                 @id @default(uuid())
+  company         String
+  role            String
+  package         String                 // e.g. "12 LPA"
+  eligibilityCgpa Float                  // eligibility threshold
+  location        String
+  status          String                 // active, closed
+  applications    PlacementApplication[]
+}
+
+model PlacementApplication {
+  id         String       @id @default(uuid())
+  jobId      String
+  job        PlacementJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  studentId  String
+  student    User         @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  round      String       // applied, test, interview, selected, rejected
+  feedback   String?
+  appliedAt  DateTime     @default(now())
+}
+
+model LibraryBook {
+  id              String        @id @default(uuid())
+  title           String
+  author          String
+  copies          Int
+  availableCopies Int
+  loans           LibraryLoan[]
+}
+
+model LibraryLoan {
+  id        String      @id @default(uuid())
+  bookId    String
+  book      LibraryBook @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  studentId String
+  student   User        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  issuedAt  DateTime    @default(now())
+  returnBy  DateTime
+  status    String      // issued, returned
+}
+
+model MentorMeeting {
+  id        String   @id @default(uuid())
+  mentorId  String
+  mentor    User     @relation("MentorMeetings", fields: [mentorId], references: [id], onDelete: Cascade)
+  menteeId  String
+  mentee    User     @relation("MenteeMeetings", fields: [menteeId], references: [id], onDelete: Cascade)
+  date      DateTime @default(now())
+  notes     String
+  category  String   // academic, attendance, career
+}
+
+model Grievance {
+  id          String   @id @default(uuid())
+  studentId   String
+  student     User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  category    String   // academic, hostel, finance, infrastructure
+  description String
+  status      String   // pending, investigating, resolved
+  resolution  String?
+  createdAt   DateTime @default(now())
+}
+
+model CodingAssignment {
+  id            String             @id @default(uuid())
+  classId       String
+  class         Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  starterCode   String
+  testCasesJson String             // JSON string array of test inputs and expected outputs
+  submissions   CodingSubmission[]
+}
+
+model CodingSubmission {
+  id                 String           @id @default(uuid())
+  codingAssignmentId String
+  assignment         CodingAssignment @relation(fields: [codingAssignmentId], references: [id], onDelete: Cascade)
+  studentId          String
+  student            User             @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  code               String
+  status             String           // passed, failed
+  compileOutput      String?
+  submittedAt        DateTime         @default(now())
+}
