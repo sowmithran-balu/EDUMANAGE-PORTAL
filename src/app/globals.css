@@ -7,82 +7,268 @@
   --card-foreground: #1a1a1a;
   --popover: #ffffff;
   --popover-foreground: #1a1a1a;
-  --primary: #6e1e27;
+  --primary: #0d9488;
+  --primary-rgb: 13, 148, 136;
   --primary-foreground: #ffffff;
   --secondary: #6e1e27;
   --secondary-foreground: #ffffff;
   --muted: #f7f7f9;
   --muted-foreground: #6b7280;
-  --accent: #fceef0;
-  --accent-foreground: #6e1e27;
+  --accent: #f0fdfa;
+  --accent-foreground: #0d9488;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #f7f7f9;
-  --ring: #6e1e27;
-  --radius: 10px;
+  --ring: #0d9488;
+  --radius: 12px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--color-border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+/* ==========================================================================
+   PRIMARY COLOR ACCENT PALETTES (nexOS Engine)
+   ========================================================================== */
+html[data-color="teal"], :root {
+  --primary: #0d9488;
+  --primary-rgb: 13, 148, 136;
+  --primary-light: #f0fdfa;
+  --primary-text: #0d9488;
+  --primary-border: #14b8a6;
 }
 
-* {
-  border-color: var(--border);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(110, 30, 39, 0.3) rgba(247, 247, 249, 0.3);
+html[data-color="indigo"] {
+  --primary: #4f46e5;
+  --primary-rgb: 79, 70, 229;
+  --primary-light: #eef2ff;
+  --primary-text: #4f46e5;
+  --primary-border: #6366f1;
+}
+
+html[data-color="emerald"] {
+  --primary: #059669;
+  --primary-rgb: 5, 150, 105;
+  --primary-light: #ecfdf5;
+  --primary-text: #059669;
+  --primary-border: #10b981;
+}
+
+html[data-color="rose"] {
+  --primary: #e11d48;
+  --primary-rgb: 225, 29, 72;
+  --primary-light: #fff1f2;
+  --primary-text: #e11d48;
+  --primary-border: #f43f5e;
+}
+
+html[data-color="navy"] {
+  --primary: #1e293b;
+  --primary-rgb: 30, 41, 59;
+  --primary-light: #f1f5f9;
+  --primary-text: #1e293b;
+  --primary-border: #475569;
+}
+
+html.dark[data-color="navy"] {
+  --primary: #38bdf8;
+  --primary-rgb: 56, 189, 248;
+  --primary-light: rgba(56, 189, 248, 0.15);
+  --primary-text: #38bdf8;
+  --primary-border: #38bdf8;
+}
+
+/* Typography, Scaling, and Radius */
+html[data-font="sans"] { font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+html[data-font="serif"] { font-family: Georgia, Cambria, "Times New Roman", Times, serif; }
+html[data-font="mono"] { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+
+html[data-scale="small"] { font-size: 13.5px; }
+html[data-scale="medium"] { font-size: 14.5px; }
+html[data-scale="large"] { font-size: 16px; }
+
+html[data-radius="sharp"] *, html[data-radius="sharp"] { border-radius: 0px !important; }
+html[data-radius="pill"] button, html[data-radius="pill"] .rounded-xl, html[data-radius="pill"] .rounded-2xl { border-radius: 9999px !important; }
+
+/* OS-Level Smooth Transitions */
+html {
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-feature-settings: "rlig" 1, "calt" 1;
+  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Light clean panel styling replacing glassmorphism */
-.glass-panel {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+* {
+  border-color: var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--primary-rgb), 0.3) rgba(247, 247, 249, 0.3);
 }
 
-.glass-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px 0 rgba(0, 0, 0, 0.01);
+/* ==========================================================================
+   nexOS FULL-PAGE DARK THEME ENGINE (Deep Obsidian / Midnight Glass)
+   ========================================================================== */
+html.dark {
+  color-scheme: dark;
+  --background: #090d16;
+  --foreground: #f1f5f9;
+  --card: #0f172a;
+  --card-foreground: #f8fafc;
+  --popover: #0f172a;
+  --popover-foreground: #f8fafc;
+  --muted: #162032;
+  --muted-foreground: #94a3b8;
+  --border: #1e293b;
+  --input: #162032;
+  --ring: var(--primary);
+  background-color: #090d16 !important;
 }
 
-.glass-input {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  color: #1a1a1a;
+html.dark body {
+  background-color: #090d16 !important;
+  color: #f1f5f9 !important;
 }
 
-.glass-input:focus {
-  border-color: #6e1e27;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(110, 30, 39, 0.15);
+/* Base Surfaces & Backgrounds */
+html.dark .bg-white,
+html.dark [class*="bg-white"] {
+  background-color: #0f172a !important;
 }
 
-/* Custom progress bar animations */
+html.dark header,
+html.dark nav,
+html.dark [class*="bg-[#F7F7F9]"],
+html.dark .bg-\[\#F7F7F9\],
+html.dark .bg-slate-50,
+html.dark [class*="bg-slate-50"],
+html.dark .bg-gray-50,
+html.dark [class*="bg-gray-50"],
+html.dark main {
+  background-color: #090d16 !important;
+}
+
+html.dark aside {
+  background-color: #0c1222 !important;
+}
+
+html.dark .bg-slate-100,
+html.dark .bg-gray-100,
+html.dark .bg-slate-100\/70 {
+  background-color: #162032 !important;
+}
+
+/* Borders */
+html.dark .border-slate-200,
+html.dark .border-slate-100,
+html.dark .border-slate-300,
+html.dark .border-gray-200,
+html.dark [class*="border-slate-200"],
+html.dark [class*="border-slate-100"] {
+  border-color: #1e293b !important;
+}
+
+html.dark hr {
+  border-color: #1e293b !important;
+}
+
+/* Typography Overrides */
+html.dark .text-\[\#1A1A1A\],
+html.dark .text-slate-950,
+html.dark .text-slate-900,
+html.dark .text-slate-850,
+html.dark .text-slate-800,
+html.dark .text-gray-900,
+html.dark .text-gray-800 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-gray-700,
+html.dark .text-gray-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-slate-400,
+html.dark .text-gray-500,
+html.dark .text-gray-400 {
+  color: #94a3b8 !important;
+}
+
+/* Inputs, Selects, Textareas */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+html.dark select,
+html.dark textarea {
+  background-color: #162032 !important;
+  border-color: #24334a !important;
+  color: #f8fafc !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+html.dark kbd {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+/* Interactive States and Hover Effects */
+html.dark .hover\:bg-slate-50:hover,
+html.dark .hover\:bg-gray-50:hover,
+html.dark .hover\:bg-slate-100:hover {
+  background-color: #162032 !important;
+}
+
+/* Glass Panels */
+html.dark .glass-panel,
+html.dark .glass-card {
+  background: #0f172a !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .glass-input {
+  background: #162032 !important;
+  border: 1px solid #24334a !important;
+  color: #f8fafc !important;
+}
+
+/* Active Highlight & Badge adapting to Primary Color */
+html.dark .bg-teal-50,
+html.dark .bg-teal-50\/70,
+html.dark .bg-teal-50\/40,
+html.dark [class*="bg-teal-50"],
+html.dark .bg-\[\#FCEEF0\],
+html.dark [class*="bg-\[\#FCEEF0\]"] {
+  background-color: rgba(var(--primary-rgb), 0.16) !important;
+}
+
+html.dark .text-teal-900 {
+  color: #f1f5f9 !important;
+}
+
+/* Primary Accent synchronization for buttons and active items */
+.bg-teal-600 {
+  background-color: var(--primary) !important;
+}
+.text-teal-600 {
+  color: var(--primary) !important;
+}
+.border-teal-600 {
+  border-color: var(--primary) !important;
+}
+.border-teal-500 {
+  border-color: var(--primary) !important;
+}
+.hover\:bg-teal-700:hover {
+  filter: brightness(0.9);
+}
+
+/* Animations */
 @keyframes progress-fill {
   from { width: 0%; }
 }
@@ -91,10 +277,9 @@ body {
   animation: progress-fill 1s ease-out forwards;
 }
 
-/* AI Highlight overlay */
 .ai-glow {
-  box-shadow: 0 0 15px rgba(110, 30, 39, 0.1);
-  border: 1px solid rgba(110, 30, 39, 0.2);
+  box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2);
+  border: 1px solid rgba(var(--primary-rgb), 0.3);
 }
 
 @media print {
@@ -110,11 +295,5 @@ body {
     margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
-  }
-  .glass-panel, .glass-card {
-    background: transparent !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: none !important;
-    color: black !important;
   }
 }

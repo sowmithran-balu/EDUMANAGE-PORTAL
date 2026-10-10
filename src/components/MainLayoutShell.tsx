@@ -7,7 +7,7 @@ import {
   GraduationCap, Search, Download, ChevronDown, 
   LayoutDashboard, Users, Globe, BookOpen, Clock, 
   CreditCard, Award, FileText, Bell, Phone, HelpCircle, 
-  Menu, X, Calendar, ShieldCheck, Cpu
+  Menu, X, Calendar, ShieldCheck, Cpu, Settings
 } from "lucide-react";
 
 interface UserData {
@@ -48,17 +48,20 @@ export default function MainLayoutShell({ user, children, rightPanel }: MainLayo
         { label: "Coding Sandbox", href: "/student/coding", icon: Cpu },
         { label: "Library Catalog", href: "/student/library", icon: BookOpen },
         { label: "Help desk Ticket", href: "/student/grievances", icon: HelpCircle },
+        { label: "Settings", href: "/settings", icon: Settings },
       ];
     } else if (role === "teacher") {
       return [
         { label: "Dashboard", href: "/teacher", icon: LayoutDashboard },
         { label: "Advising Network", href: "/teacher#advising", icon: Users },
+        { label: "Settings", href: "/settings", icon: Settings },
       ];
     } else {
       // admin
       return [
         { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
         { label: "System Reports", href: "/admin/reports", icon: FileText },
+        { label: "Settings", href: "/settings", icon: Settings },
       ];
     }
   };
